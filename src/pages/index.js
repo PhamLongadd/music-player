@@ -1,46 +1,34 @@
-import {
-  faEllipsisH,
-  faPlay,
-  faRandom,
-  faRedo,
-  faStepBackward,
-  faStepForward,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect } from "react";
 
 import song from "../data/index.js";
 import styles from "./index.module.css";
+import Player from "../components/player/player.js";
 
 export default function Home() {
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [nextSongIndex, setNextSongIndex] = useState(currentSongIndex + 1);
+
+  useEffect(() => {
+    setNextSongIndex(() => {
+      if (currentSongIndex + 1 > song.length - 1) {
+        return 0;
+      } else {
+        return currentSongIndex + 1;
+      }
+    });
+  }, [currentSongIndex]);
+
   return (
     <div className={styles.container}>
       <div className={styles.dashboard}>
-        <h4>Now playing:</h4>
-        <h2>String 57th & 9th</h2>
-        <div className={styles.cd}>
-          <img
-            src="https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg"
-            alt="ss"
-            className={styles.cdThumb}
-          />
-        </div>
-        <div className={styles.control}>
-          <div className={styles.btnRepeat}>
-            <FontAwesomeIcon icon={faRedo} />
-          </div>
-          <div className={styles.btnPrev}>
-            <FontAwesomeIcon icon={faStepBackward} />
-          </div>
-          <div className={styles.btnTogglePlay}>
-            <FontAwesomeIcon icon={faPlay} />
-          </div>
-          <div className={styles.btnNext}>
-            <FontAwesomeIcon icon={faStepForward} />
-          </div>
-          <div className={styles.btnRandom}>
-            <FontAwesomeIcon icon={faRandom} />
-          </div>
-        </div>
+        <Player
+          currentSongIndex={currentSongIndex}
+          setCurrentSongIndex={setCurrentSongIndex}
+          nextSongIndex={nextSongIndex}
+          song={song}
+        />
       </div>
       <div className={styles.playlist}>
         {song.map((item, index) => (

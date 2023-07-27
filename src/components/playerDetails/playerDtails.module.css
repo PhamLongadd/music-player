@@ -1,0 +1,11 @@
+.cd {
+  display: flex;
+  margin: auto;
+  width: 200px;
+}
+
+.cdThumb {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
