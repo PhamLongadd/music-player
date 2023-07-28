@@ -14,7 +14,7 @@ import styles from "./playerControls.module.css";
 function PlayerControls(props) {
   return (
     <div className={styles.control}>
-      <div className={styles.btnRepeat}>
+      <div className={styles.btnRepeat} onClick={props.replaySong}>
         <FontAwesomeIcon icon={faRedo} />
       </div>
       <div className={styles.btnPrev} onClick={() => props.skipSong(false)}>
@@ -29,7 +29,7 @@ function PlayerControls(props) {
       <div className={styles.btnNext} onClick={() => props.skipSong()}>
         <FontAwesomeIcon icon={faStepForward} />
       </div>
-      <div className={styles.btnRandom}>
+      <div className={styles.btnRandom} onClick={props.handleRandom}>
         <FontAwesomeIcon icon={faRandom} />
       </div>
     </div>

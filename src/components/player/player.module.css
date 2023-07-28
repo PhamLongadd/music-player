@@ -1,0 +1,10 @@
+.progress {
+  width: 385px;
+  height: 15px;
+  background: #d3d3d3;
+  cursor: pointer;
+}
+
+.nextUp {
+  text-align: center;
+}

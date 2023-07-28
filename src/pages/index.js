@@ -32,7 +32,11 @@ export default function Home() {
       </div>
       <div className={styles.playlist}>
         {song.map((item, index) => (
-          <div key={index} className={styles.song}>
+          <div
+            key={index}
+            className={styles.song}
+            onClick={() => setCurrentSongIndex(index)}
+          >
             <img src={item.image} alt={item.name} className={styles.thumb} />
             <div className={styles.body}>
               <h3 className={styles.title}>{item.name}</h3>
