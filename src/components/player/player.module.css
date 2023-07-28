@@ -8,3 +8,8 @@
 .nextUp {
   text-align: center;
 }
+
+.time {
+  display: flex;
+  justify-content: space-between;
+}

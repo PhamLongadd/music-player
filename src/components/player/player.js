@@ -6,28 +6,41 @@ import styles from "./player.module.css";
 
 function Player(props) {
   const audioEl = useRef(null);
+  const progressBar = useRef();
+  const animationRef = useRef();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
     if (isPlaying) {
       audioEl.current.play();
+      animationRef.current = requestAnimationFrame(whilePlaying);
     } else {
       audioEl.current.pause();
+      cancelAnimationFrame(animationRef.current);
     }
   });
 
   useEffect(() => {
-    const handleTimeUpdate = () => {
-      setCurrentTime(audioEl.current.currentTime);
-    };
+    const seconds = Math.floor(audioEl.current.duration);
+    setDuration(seconds);
+    progressBar.current.max = seconds;
+  }, [audioEl?.current?.loadedmetadata, audioEl?.current?.readyState]);
 
-    audioEl.current.addEventListener("timeupdate", handleTimeUpdate);
+  const whilePlaying = () => {
+    progressBar.current.value = audioEl.current.currentTime;
+    setCurrentTime(progressBar.current.value);
+    animationRef.current = requestAnimationFrame(whilePlaying);
+  };
 
-    return () => {
-      audioEl.current.removeEventListener("timeupdate", handleTimeUpdate);
-    };
-  }, []);
+  const calculateTime = (secs) => {
+    const minutes = Math.floor(secs / 60);
+    const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+    const seconds = Math.floor(secs % 60);
+    const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+    return `${returnedMinutes}:${returnedSeconds}`;
+  };
 
   const skipSong = (forwards = true) => {
     if (forwards) {
@@ -65,10 +78,9 @@ function Player(props) {
     props.setCurrentSongIndex(randomIndex);
   };
 
-  const handleInput = (e) => {
-    const currentTime = e.target.value;
-    setCurrentTime(currentTime);
-    audioEl.current.currentTime = currentTime;
+  const handleInput = () => {
+    audioEl.current.currentTime = progressBar.current.value;
+    setCurrentTime(progressBar.current.value);
   };
 
   return (
@@ -85,16 +97,16 @@ function Player(props) {
         id="progress"
         className={styles.progress}
         type="range"
-        value={currentTime}
-        step="1"
-        min="0"
-        max={
-          audioEl.current && audioEl.current.duration
-            ? audioEl.current.duration
-            : "100"
-        }
+        defaultValue="0"
+        ref={progressBar}
         onChange={handleInput}
       ></input>
+      <div className={styles.time}>
+        <div className={styles.currentTime}>{calculateTime(currentTime)}</div>
+        <div className={styles.duration}>
+          {duration && !isNaN(duration) && calculateTime(duration)}
+        </div>
+      </div>
       <audio
         src={props.song[props.currentSongIndex].path}
         ref={audioEl}
